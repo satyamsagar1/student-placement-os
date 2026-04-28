@@ -23,10 +23,108 @@ const createApplication = async (req, res) => {
             data: newApplication
         });
     } catch (error) {
-        res.status(res.error?.statusCode || 500).json({ error: error.message || 'Failed to create application' });
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: 'Failed to create application',
+            error: error.message || 'Failed to create application' });
+    }
+}
+
+
+const getApplications = async (req, res) => {
+    try {
+        const userId = req.user.id; // Get user ID from authenticated request
+
+        const filters = req.query; // Get query parameters for filtering, sorting, pagination   
+        
+        const applications = await applicationService.getApplications(userId, filters);
+
+        const count = applications.length;
+
+        res.status(200).json({
+            success: true,
+            message: 'Applications retrieved successfully',
+            count,
+            data: applications
+        });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: 'Failed to retrieve applications',
+            error: error.message || 'Failed to retrieve applications' });
+    }
+}
+
+const updateApplicationStatus = async(req, res) =>{
+    try{
+        const userId = req.user.id; // Get user ID from authenticated request
+        const applicationId = req.params.id; // Get application ID from URL parameters
+        const { status } = req.body; // Get new status from request body
+        if(!status){
+            return res.status(400).json({ error: 'Status is required' });
+        }
+        const updatedApplication = await applicationService.updateApplicationStatus(userId, applicationId, status);
+
+        res.status(200).json({
+            success: true,
+            message: 'Application status updated successfully',
+            data: updatedApplication
+        });
+    }
+    catch (error) {
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: 'Failed to update application status',
+            error: error.message || 'Failed to update application status' });
+    }
+}
+
+const updateApplication = async(req, res) =>{
+    // Similar to updateApplicationStatus but allows updating multiple fields of the application
+    try{
+        const userId = req.user.id; // Get user ID from authenticated request
+        const applicationId = req.params.id;
+        const applicationData = req.body; // Get updated application data from request body
+
+        const updatedApplication = await applicationService.updateApplication(userId, applicationId, applicationData);
+
+        res.status(200).json({
+            success: true,
+            message: 'Application updated successfully',
+            data: updatedApplication
+        });
+    }
+    catch (error) {
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: 'Failed to update application',
+            error: error.message || 'Failed to update application' });
+
+    }
+}
+
+const deleteApplication = async(req, res) =>{
+    try{
+        const userId = req.user.id; // Get user ID from authenticated request
+        const applicationId = req.params.id; // Get application ID from URL parameters
+        await applicationService.deleteApplication(userId, applicationId);
+        res.status(200).json({
+            success: true,
+            message: 'Application deleted successfully'
+        });
+    }
+    catch (error) {
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: 'Failed to delete application',
+            error: error.message || 'Failed to delete application' });
     }
 }
 
 module.exports = {
-    createApplication
+    createApplication,
+    getApplications,
+    updateApplicationStatus,
+    updateApplication,
+    deleteApplication
 }
