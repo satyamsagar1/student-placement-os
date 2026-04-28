@@ -1,4 +1,5 @@
 const applicationService = require('./application.services');
+const {validateCreateApplication, validateUpdateApplication, validateStatus} = require('./application.validation')
 
 
 // Create a new application
@@ -7,15 +8,11 @@ const createApplication = async (req, res) => {
     try{
         const userId = req.user.id; // Get user ID from authenticated request
         
-        const {companyName, role} = req.body;
-
-        if(!companyName || !role){
-            return res.status(400).json({ error: 'Company name and role are required' });
-        }
-        
         const applicationData = req.body; // Get application data from request body
 
-        const newApplication = await applicationService.createApplication(userId, applicationData);
+        const validateApplicationData = validateCreateApplication(applicationData);
+
+        const newApplication = await applicationService.createApplication(userId, validateApplicationData);
 
         res.status(201).json({
             success: true,
@@ -29,7 +26,6 @@ const createApplication = async (req, res) => {
             error: error.message || 'Failed to create application' });
     }
 }
-
 
 const getApplications = async (req, res) => {
     try {
@@ -63,7 +59,10 @@ const updateApplicationStatus = async(req, res) =>{
         if(!status){
             return res.status(400).json({ error: 'Status is required' });
         }
-        const updatedApplication = await applicationService.updateApplicationStatus(userId, applicationId, status);
+
+        const validatedStatus = validateStatus(status);
+
+        const updatedApplication = await applicationService.updateApplicationStatus(userId, applicationId, validatedStatus);
 
         res.status(200).json({
             success: true,
@@ -86,7 +85,9 @@ const updateApplication = async(req, res) =>{
         const applicationId = req.params.id;
         const applicationData = req.body; // Get updated application data from request body
 
-        const updatedApplication = await applicationService.updateApplication(userId, applicationId, applicationData);
+        const validateApplicationData = validateUpdateApplication(applicationData);
+
+        const updatedApplication = await applicationService.updateApplication(userId, applicationId, validateApplicationData);
 
         res.status(200).json({
             success: true,

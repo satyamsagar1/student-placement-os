@@ -71,14 +71,6 @@ const getApplications = async (userId, filters) => {
 
 const updateApplicationStatus = async (userId, applicationId, newStatus) => {
   const application = await Application.findOne({ _id: applicationId, userId });
-
-  const allowedStatuses = ['Applied', 'OA', 'Interview', 'HR', 'Rejected', 'Offer', 'Ghosted', 'Withdrawn'];
-
-  if (!allowedStatuses.includes(newStatus)) {
-    const error = new Error("Invalid status");
-    error.statusCode = 400;
-    throw error;
-  }
   
   if (!application) {
     const error = new Error("Application not found");
