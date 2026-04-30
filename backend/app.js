@@ -4,6 +4,7 @@ const errorHandler = require('./src/middleware/errorHandler');
 const authRoutes = require('./src/modules/Auth/auth.routes');
 const userRoutes = require('./src/modules/User/user.routes');
 const ApplicationRoutes = require('./src/modules/Application/application.routes');
+const DashboardRoutes = require('./src/modules/Dashboard/dashboard.routes');
 
 const app=express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api/auth',authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/applications', ApplicationRoutes);
+app.use('/api/dashboard', DashboardRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

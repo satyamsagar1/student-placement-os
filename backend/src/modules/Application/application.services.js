@@ -1,6 +1,20 @@
 const Application = require("./application.model");
 
-// Create a new application
+const formatApplication = (application) => ({
+    id: application._id,
+    companyName: application.companyName,
+    role: application.role,
+    status: application.status,
+    jobLink: application.jobLink,
+    location: application.location,
+    workMode: application.workMode,
+    salary: application.salary,
+    appliedDate: application.appliedDate,
+    notes: application.notes,
+    source: application.source,
+    nextActionDate: application.nextActionDate,
+});
+
 const createApplication = async (userId, applicationData) => {
   const application = new Application({
     userId,
@@ -18,20 +32,7 @@ const createApplication = async (userId, applicationData) => {
   });
   await application.save();
 
-  return {
-    id: application._id,
-    companyName: application.companyName,
-    role: application.role,
-    status: application.status,
-    jobLink: application.jobLink,
-    location: application.location,
-    workMode: application.workMode,
-    salary: application.salary,
-    appliedDate: application.appliedDate,
-    notes: application.notes,
-    source: application.source,
-    nextActionDate: application.nextActionDate,
-  };
+  return formatApplication(application);
 };
 
 const getApplications = async (userId, filters) => {
@@ -47,26 +48,9 @@ const getApplications = async (userId, filters) => {
     filter.source = { $regex: filters.source, $options: "i" };
   }
 
-  let applications = await Application.find(filter).sort({ appliedDate: -1 });
+  const applications = await Application.find(filter).sort({ appliedDate: -1 });
 
-  if (!applications) {
-    applications = [];
-  }
-
-  return applications.map((app) => ({
-    id: app._id,
-    companyName: app.companyName,
-    role: app.role,
-    status: app.status,
-    jobLink: app.jobLink,
-    location: app.location,
-    workMode: app.workMode,
-    salary: app.salary,
-    appliedDate: app.appliedDate,
-    notes: app.notes,
-    source: app.source,
-    nextActionDate: app.nextActionDate,
-  }));
+  return applications.map(formatApplication);
 };
 
 const updateApplicationStatus = async (userId, applicationId, newStatus) => {
@@ -79,10 +63,8 @@ const updateApplicationStatus = async (userId, applicationId, newStatus) => {
   }
   application.status = newStatus;
   await application.save();
-  return {
-    id: application._id,
-    status: application.status,
-  };
+
+  return formatApplication(application);
 };
 
 const updateApplication = async (userId, applicationId, applicationData) => {
@@ -115,20 +97,7 @@ const updateApplication = async (userId, applicationId, applicationData) => {
   });
 
   await application.save();
-  return {
-    id: application._id,
-    companyName: application.companyName,
-    role: application.role,
-    status: application.status,
-    jobLink: application.jobLink,
-    location: application.location,
-    workMode: application.workMode,
-    salary: application.salary,
-    appliedDate: application.appliedDate,
-    notes: application.notes,
-    source: application.source,
-    nextActionDate: application.nextActionDate,
-  };
+  return formatApplication(application);
 };
 
 const deleteApplication = async (userId, applicationId) => {
