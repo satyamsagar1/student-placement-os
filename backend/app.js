@@ -6,6 +6,7 @@ const userRoutes = require('./src/modules/User/user.routes');
 const ApplicationRoutes = require('./src/modules/Application/application.routes');
 const DashboardRoutes = require('./src/modules/Dashboard/dashboard.routes');
 const ResumeRoutes = require('./src/modules/Resume/resume.routes');
+const ReminderRoutes = require('./src/modules/Reminder/reminder.routes');
 
 const app=express();
 
@@ -16,6 +17,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/applications', ApplicationRoutes);
 app.use('/api/dashboard', DashboardRoutes);
 app.use('/api/resumes', ResumeRoutes);
+app.use('/api/reminders', ReminderRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
