@@ -7,8 +7,14 @@ const ApplicationRoutes = require('./src/modules/Application/application.routes'
 const DashboardRoutes = require('./src/modules/Dashboard/dashboard.routes');
 const ResumeRoutes = require('./src/modules/Resume/resume.routes');
 const ReminderRoutes = require('./src/modules/Reminder/reminder.routes');
+const cors = require('cors');
 
 const app=express();
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+}));
+
 
 app.use(express.json());
 
