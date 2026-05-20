@@ -11,6 +11,7 @@ const createApplicationSchema = joi.object({
     appliedDate: joi.date().optional(),
     notes: joi.string().trim().allow("").optional(),
     source: joi.string().trim().valid('LinkedIn', 'Company Website', 'Referral', 'Job Board', 'Other').optional(),
+    resumeUsed: joi.string().optional(),
     nextActionDate: joi.date().optional()
 
 });
@@ -26,6 +27,7 @@ const upateApplicationSchema = joi.object({
     appliedDate: joi.date().optional(),
     notes: joi.string().trim().allow("").optional(),
     source: joi.string().trim().valid('LinkedIn', 'Company Website', 'Referral', 'Job Board', 'Other').optional(),
+    resumeUsed: joi.string().optional(),
     nextActionDate: joi.date().optional()
 });
 

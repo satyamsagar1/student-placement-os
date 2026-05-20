@@ -5,6 +5,7 @@ const {validateCreateApplication, validateUpdateApplication, validateStatus} = r
 // Create a new application
 
 const createApplication = async (req, res) => {
+    console.log(req.body);
     try{
         const userId = req.user.id; // Get user ID from authenticated request
         
@@ -52,6 +53,7 @@ const getApplications = async (req, res) => {
 }
 
 const updateApplicationStatus = async(req, res) =>{
+    
     try{
         const userId = req.user.id; // Get user ID from authenticated request
         const applicationId = req.params.id; // Get application ID from URL parameters

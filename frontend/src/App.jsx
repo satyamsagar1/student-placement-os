@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./routes/protectedRoutes.jsx";
 import PublicRoute from "./routes/publicRoutes.jsx";
-import Navbar from "./components/navbar.jsx";
+import AppLayout from "./layouts/appLayout.jsx";
 
 import HomePage from "./pages/homePage.jsx";
 import Application from "./pages/applications.jsx";
@@ -14,14 +14,14 @@ import Resume from "./pages/resumes.jsx";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      
       <Routes>
         <Route 
         path="/" 
         element={
-        <PublicRoute>
-        <HomePage />
-        </PublicRoute>
+          <AppLayout>
+            <HomePage />
+          </AppLayout>
         } />
 
         <Route 
@@ -44,7 +44,9 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <AppLayout>
+                <Dashboard />
+              </AppLayout>
             </ProtectedRoute>
           }
         />
@@ -52,7 +54,9 @@ function App() {
           path="/applications"
           element={
             <ProtectedRoute>
-              <Application />
+              <AppLayout>
+                <Application />
+              </AppLayout>
             </ProtectedRoute>
           }
         />
@@ -60,7 +64,9 @@ function App() {
           path="/reminders"
           element={
             <ProtectedRoute>
-              <Reminder />
+              <AppLayout>
+                <Reminder />
+              </AppLayout>
             </ProtectedRoute>
           }
         />
@@ -68,7 +74,9 @@ function App() {
           path="/resumes"
           element={
             <ProtectedRoute>
-              <Resume />
+              <AppLayout>
+                <Resume />
+              </AppLayout>
             </ProtectedRoute>
           }
         />

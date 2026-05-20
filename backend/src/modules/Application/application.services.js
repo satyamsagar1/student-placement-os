@@ -1,18 +1,25 @@
 const Application = require("./application.model");
 
 const formatApplication = (application) => ({
-    id: application._id,
-    companyName: application.companyName,
-    role: application.role,
-    status: application.status,
-    jobLink: application.jobLink,
-    location: application.location,
-    workMode: application.workMode,
-    salary: application.salary,
-    appliedDate: application.appliedDate,
-    notes: application.notes,
-    source: application.source,
-    nextActionDate: application.nextActionDate,
+  id: application._id,
+  companyName: application.companyName,
+  role: application.role,
+  status: application.status,
+  jobLink: application.jobLink,
+  location: application.location,
+  workMode: application.workMode,
+  salary: application.salary,
+  appliedDate: application.appliedDate,
+  notes: application.notes,
+  source: application.source,
+  resumeUsed: application.resumeUsed
+    ? {
+        id: application.resumeUsed._id,
+
+        originalName: application.resumeUsed.originalName,
+      }
+    : null,
+  nextActionDate: application.nextActionDate,
 });
 
 const createApplication = async (userId, applicationData) => {
@@ -28,11 +35,17 @@ const createApplication = async (userId, applicationData) => {
     appliedDate: applicationData.appliedDate,
     notes: applicationData.notes,
     source: applicationData.source,
+    resumeUsed: applicationData.resumeUsed,
     nextActionDate: applicationData.nextActionDate,
   });
   await application.save();
+  console.log(application);
 
-  return formatApplication(application);
+  const populatedApplication = await Application.findById(
+    application._id,
+  ).populate("resumeUsed", "originalName");
+
+  return formatApplication(populatedApplication);
 };
 
 const getApplications = async (userId, filters) => {
@@ -48,14 +61,16 @@ const getApplications = async (userId, filters) => {
     filter.source = { $regex: filters.source, $options: "i" };
   }
 
-  const applications = await Application.find(filter).sort({ appliedDate: -1 });
+  const applications = await Application.find(filter)
+    .populate("resumeUsed", "originalName")
+    .sort({ appliedDate: -1 });
 
   return applications.map(formatApplication);
 };
 
 const updateApplicationStatus = async (userId, applicationId, newStatus) => {
   const application = await Application.findOne({ _id: applicationId, userId });
-  
+
   if (!application) {
     const error = new Error("Application not found");
     error.statusCode = 404;
@@ -88,6 +103,7 @@ const updateApplication = async (userId, applicationId, applicationData) => {
     "notes",
     "source",
     "nextActionDate",
+    "resumeUsed",
   ];
 
   allowedFields.forEach((field) => {
@@ -97,7 +113,12 @@ const updateApplication = async (userId, applicationId, applicationData) => {
   });
 
   await application.save();
-  return formatApplication(application);
+
+  const populatedApplication = await Application.findById(
+    application._id,
+  ).populate("resumeUsed", "originalName");
+
+  return formatApplication(populatedApplication);
 };
 
 const deleteApplication = async (userId, applicationId) => {

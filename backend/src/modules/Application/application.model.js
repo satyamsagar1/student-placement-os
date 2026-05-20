@@ -66,6 +66,11 @@ const applicationSchema = new mongoose.Schema({
         default: 'Other'
     },
 
+    resumeUsed:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Resume'
+    },
+
     nextActionDate: {
         type: Date
     },
